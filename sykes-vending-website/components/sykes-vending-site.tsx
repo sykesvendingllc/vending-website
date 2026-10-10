@@ -85,6 +85,11 @@ export default function SykesVendingSite() {
 
   const goToSection = (id: string) => {
     setMenuOpen(false)
+    if (id === 'advertise') {
+    setView('advertise')
+    setPendingSection(null)
+    return
+  }
     setView('home')
     setPendingSection({ id })
   }
