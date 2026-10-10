@@ -97,6 +97,7 @@ export default function SykesVendingSite() {
         onHome={() => goTo('home')}
         onSection={goToSection}
         onRequest={() => goTo('request')}
+        onAdvertise={() => goTo('advertise')}
       />
       <main>
         <Activity mode={view === 'home' ? 'visible' : 'hidden'}>
@@ -126,12 +127,14 @@ function SiteHeader({
   onHome,
   onSection,
   onRequest,
+  onAdvertise,
 }: {
   menuOpen: boolean
   onToggleMenu: () => void
   onHome: () => void
   onSection: (id: string) => void
   onRequest: () => void
+  onAdvertise: () => void
 }) {
   const linkClass =
     'font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground'
