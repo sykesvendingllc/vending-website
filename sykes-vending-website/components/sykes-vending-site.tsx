@@ -1022,27 +1022,21 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
   )
   const { values: v, errors, set } = form
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  cconst [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleWeb3Submit = async (e: any) => {
-    e.preventDefault();
-
+const handleWeb3Submit = async (e: any) => {
+  e.preventDefault();
   
-  // 1. Manually trigger the form's internal validation first
-  if (form.submit) {
-    await form.submit(e);
-  }
-  
-  // 2. Stop if there are any validation errors (like missing name or bad email)
-  if (errors.contact_name || errors.email || errors.location_type) {
+  // Clean internal check: Make sure name and email aren't totally empty strings
+  if (!v.contact_name || !v.email) {
+    alert("Please fill out your Name and Email address.");
     return;
   }
 
   setIsSubmitting(true);
 
-  // 3. Bundle up the layout values for Web3Forms
   const payload = {
-    access_key: "46bd9799-dc77-4054-a41f-756da68db9a0",
+    access_key: "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE",
     subject: `New Vending Request from ${v.business_name || v.contact_name}`,
     "Contact Name": v.contact_name,
     "Business Name": v.business_name,
@@ -1067,8 +1061,8 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
     const result = await response.json();
 
     if (result.success) {
-      alert("Your vending machine request has been sent successfully!");
-      // Reset all values to blank
+      alert("Your request has been sent successfully!");
+      // Manually wipe values clean
       set('contact_name')('');
       set('business_name')('');
       set('email')('');
@@ -1078,11 +1072,11 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
       set('foot_traffic')('');
       set('message')('');
     } else {
-      alert("Submission failed. Please verify your details.");
+      alert("Submission failed from server. Please verify your data.");
     }
   } catch (err) {
-    console.error(err);
-    alert("Connection error. Please try again.");
+    console.error("Fetch intercepted error:", err);
+    alert("Web3Forms routing error. Please check your Access Key.");
   } finally {
     setIsSubmitting(false);
   }
