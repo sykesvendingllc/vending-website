@@ -318,7 +318,7 @@ function Hero({ onRequest, onAdvertise }: { onRequest: () => void; onAdvertise: 
           </div>
           <div className="mt-12 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
             <MapPin className="h-4 w-4 text-accent" aria-hidden="true" />
-            Denver · Aurora · Lakewood · Highlands Ranch
+            Denver Metro
           </div>
         </div>
 
