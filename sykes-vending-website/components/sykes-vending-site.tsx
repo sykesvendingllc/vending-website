@@ -1020,6 +1020,71 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
   )
   const { values: v, errors, set } = form
 
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+const handleWeb3Submit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // 1. Manually trigger the form's internal validation first
+  if (form.submit) {
+    await form.submit(e);
+  }
+  
+  // 2. Stop if there are any validation errors (like missing name or bad email)
+  if (errors.contact_name || errors.email || errors.location_type) {
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  // 3. Bundle up the layout values for Web3Forms
+  const payload = {
+    access_key: "46bd9799-dc77-4054-a41f-756da68db9a0",
+    subject: `New Vending Request from ${v.business_name || v.contact_name}`,
+    "Contact Name": v.contact_name,
+    "Business Name": v.business_name,
+    "Email": v.email,
+    "Phone": v.phone,
+    "Property Type": v.location_type,
+    "Location/City": v.location_address,
+    "Daily Foot Traffic": v.foot_traffic,
+    "Message": v.message,
+  };
+
+  try {
+    const response = await fetch("https://web3forms.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Your vending machine request has been sent successfully!");
+      // Reset all values to blank
+      set('contact_name')('');
+      set('business_name')('');
+      set('email')('');
+      set('phone')('');
+      set('location_type')('');
+      set('location_address')('');
+      set('foot_traffic')('');
+      set('message')('');
+    } else {
+      alert("Submission failed. Please verify your details.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Connection error. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
   return (
     <PageLayout
       left={
@@ -1088,12 +1153,12 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
           />
         ) : (
           <FormShell
-            title="Request a machine"
-            submitLabel="Send My Request"
-            status={form.status}
-            onSubmit={form.submit}
-          >
-            <Field id="contact_name" label="Your name" required error={errors.contact_name}>
+  title="Request a machine"
+  submitLabel={isSubmitting ? "Sending..." : "Send My Request"}
+  status={isSubmitting ? 'sending' : form.status}
+  onSubmit={handleWeb3Submit}
+>
+  <Field id="contact_name" label="Your name" required error={errors.contact_name}>
               <input
                 id="contact_name"
                 type="text"
@@ -1220,6 +1285,70 @@ function AdvertisePage({ onRequest }: { onRequest: () => void }) {
     'ad_',
   )
   const { values: v, errors, set } = form
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+const handleWeb3Submit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // 1. Manually trigger the form's internal validation first
+  if (form.submit) {
+    await form.submit(e);
+  }
+  
+  // 2. Stop if there are any validation errors (like missing name or bad email)
+  if (errors.contact_name || errors.email || errors.location_type) {
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  // 3. Bundle up the layout values for Web3Forms
+  const payload = {
+    access_key: "b75f40bb-32b5-4019-a213-feffc7b98a16",
+    subject: `New Ad Request from ${v.business_name || v.contact_name}`,
+    "Contact Name": v.contact_name,
+    "Business Name": v.business_name,
+    "Email": v.email,
+    "Phone": v.phone,
+    "Property Type": v.location_type,
+    "Location/City": v.location_address,
+    "Daily Foot Traffic": v.foot_traffic,
+    "Message": v.message,
+  };
+
+  try {
+    const response = await fetch("https://web3forms.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Your vending machine request has been sent successfully!");
+      // Reset all values to blank
+      set('contact_name')('');
+      set('business_name')('');
+      set('email')('');
+      set('phone')('');
+      set('location_type')('');
+      set('location_address')('');
+      set('foot_traffic')('');
+      set('message')('');
+    } else {
+      alert("Submission failed. Please verify your details.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Connection error. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   const id = (name: string) => `ad_${name}`
   const err = (name: string) => errors[name]
 
@@ -1282,12 +1411,13 @@ function AdvertisePage({ onRequest }: { onRequest: () => void }) {
           />
         ) : (
           <FormShell
-            title="Advertising request"
-            submitLabel="Send Ad Request"
-            status={form.status}
-            onSubmit={form.submit}
-          >
-            <Field id={id('contact_name')} label="Your name" required error={err('contact_name')}>
+            title="Submit Ad Request"
+            submitLabel={isSubmitting ? "Sending..." : "Send My Ad Request"}
+            status={isSubmitting ? 'sending' : form.status}
+            onSubmit={handleWeb3Submit} // <-- CHANGE THIS LINE TO OUR NEW FUNCTION
+>
+  <Field id="contact_name" label="Your name" required error={errors.contact_name}>
+
               <input
                 id={id('contact_name')}
                 type="text"
