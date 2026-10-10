@@ -1,4 +1,6 @@
-'use client'
+"use client"; // <-- MAKE SURE THIS IS LINE 1 AT THE VERY TOP OF THE FILE
+
+import React from 'react'; // or whatever imports you already had
 
 import { Activity, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import Image from 'next/image'
