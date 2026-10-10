@@ -1024,8 +1024,9 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-const handleWeb3Submit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleWeb3Submit = async (e: any) => {
+    e.preventDefault();
+
   
   // 1. Manually trigger the form's internal validation first
   if (form.submit) {
