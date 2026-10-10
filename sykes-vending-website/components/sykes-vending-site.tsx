@@ -1022,12 +1022,11 @@ function RequestMachinePage({ onAdvertise }: { onAdvertise: () => void }) {
   )
   const { values: v, errors, set } = form
 
-  cconst [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-const handleWeb3Submit = async (e: any) => {
+const handleWeb3Submit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   
-  // Clean internal check: Make sure name and email aren't totally empty strings
   if (!v.contact_name || !v.email) {
     alert("Please fill out your Name and Email address.");
     return;
@@ -1035,8 +1034,9 @@ const handleWeb3Submit = async (e: any) => {
 
   setIsSubmitting(true);
 
+  // Explicit payload object mapping matching standard client requests
   const payload = {
-    access_key: "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE",
+    access_key: "b75f40bb-32b5-4019-a213-feffc7b98a16",
     subject: `New Vending Request from ${v.business_name || v.contact_name}`,
     "Contact Name": v.contact_name,
     "Business Name": v.business_name,
@@ -1049,7 +1049,7 @@ const handleWeb3Submit = async (e: any) => {
   };
 
   try {
-    const response = await fetch("https://web3forms.com", {
+    const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1061,8 +1061,7 @@ const handleWeb3Submit = async (e: any) => {
     const result = await response.json();
 
     if (result.success) {
-      alert("Your request has been sent successfully!");
-      // Manually wipe values clean
+      alert("Your vending machine request has been sent successfully!");
       set('contact_name')('');
       set('business_name')('');
       set('email')('');
@@ -1072,11 +1071,11 @@ const handleWeb3Submit = async (e: any) => {
       set('foot_traffic')('');
       set('message')('');
     } else {
-      alert("Submission failed from server. Please verify your data.");
+      alert("Submission failed from server. Please verify your details.");
     }
   } catch (err) {
-    console.error("Fetch intercepted error:", err);
-    alert("Web3Forms routing error. Please check your Access Key.");
+    console.error(err);
+    alert("Form submission failed. Please try again.");
   } finally {
     setIsSubmitting(false);
   }
@@ -1284,66 +1283,61 @@ function AdvertisePage({ onRequest }: { onRequest: () => void }) {
   
   const { values: v, errors, set } = form
   
-  // --- FIXED ISOLATED AD HANDLER ---
   const [isSubmittingAd, setIsSubmittingAd] = React.useState(false);
 
-  const handleWeb3AdSubmit = async (e: any) => {
-    e.preventDefault();
-    
-    // Internal validation check matching this specific page's constraints
-    if (!v.contact_name || !v.business_name || !v.email || !v.business_category) {
-      alert("Please fill out all required fields (Name, Business Name, Email, and Category).");
-      return;
-    }
+const handleWeb3AdSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  
+  if (!v.contact_name || !v.business_name || !v.email || !v.business_category) {
+    alert("Please fill out all required fields (Name, Business Name, Email, and Category).");
+    return;
+  }
 
-    setIsSubmittingAd(true);
+  setIsSubmittingAd(true);
 
-    const payload = {
-      access_key: "b75f40bb-32b5-4019-a213-feffc7b98a16",
-      subject: `📈 New ADVERTISING Inquiry from ${v.business_name}`,
-      "Contact Name": v.contact_name,
-      "Business Name": v.business_name,
-      "Email": v.email,
-      "Phone": v.phone,
-      "Business Category": v.business_category,
-      "Target Areas": v.target_areas,
-      "Campaign Goals": v.campaign_goals,
-    };
-
-    try {
-      // Fixed endpoint URL to Web3Forms API submssion link
-      const response = await fetch("https://web3forms.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert("Your advertising inquiry has been sent successfully! We will contact you shortly.");
-        // Manually wipe your specific Ad form fields clean
-        set('contact_name')('');
-        set('business_name')('');
-        set('email')('');
-        set('phone')('');
-        set('business_category')('');
-        set('target_areas')('');
-        set('campaign_goals')('');
-      } else {
-        alert("Submission failed from server. Please verify your data.");
-      }
-    } catch (err) {
-      console.error("Ad Fetch error:", err);
-      alert("Connection error. Please check your network and try again.");
-    } finally {
-      setIsSubmittingAd(false);
-    }
+  const payload = {
+    access_key: "b75f40bb-32b5-4019-a213-feffc7b98a16",
+    subject: `📈 New ADVERTISING Inquiry from ${v.business_name}`,
+    "Contact Name": v.contact_name,
+    "Business Name": v.business_name,
+    "Email": v.email,
+    "Phone": v.phone,
+    "Business Category": v.business_category,
+    "Target Areas": v.target_areas,
+    "Campaign Goals": v.campaign_goals,
   };
-  // ----------------------------------
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Your advertising inquiry has been sent successfully! We will contact you shortly.");
+      set('contact_name')('');
+      set('business_name')('');
+      set('email')('');
+      set('phone')('');
+      set('business_category')('');
+      set('target_areas')('');
+      set('campaign_goals')('');
+    } else {
+      alert("Submission failed from server. Please verify your data.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Form submission failed. Please try again.");
+  } finally {
+    setIsSubmittingAd(false);
+  }
+};
 
   const id = (name: string) => `ad_${name}`
   const err = (name: string) => errors[name]
