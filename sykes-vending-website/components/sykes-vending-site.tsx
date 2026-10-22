@@ -376,8 +376,8 @@ function SmartMarketSection() {
 
 function HostSection() {
   const terms = [
-    'Six-month minimum placement, so the location has time to prove itself.',
-    "60 days' notice after that if you'd like the machine removed.",
+    'Two-month minimum placement, so the location has time to prove itself.',
+    "30 days' notice after that if you'd like the machine removed.",
     'All maintenance, restocking and service stays with us — hosts never service or move the machine.',
   ]
   return (
